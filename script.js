@@ -104,16 +104,20 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function animateCount(el) {
-    var target = parseInt(el.getAttribute("data-count"), 10) || 0;
-    var duration = 1400;
-    var start = performance.now();
-    function tick(now) {
-      var p = Math.min((now - start) / duration, 1);
-      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+  var raw = el.getAttribute("data-count") || "0";
+  var target = parseInt(raw, 10) || 0;
+  var suffix = raw.replace(/[0-9]/g, ""); // забирает всё, кроме цифр (например, "%" или "+")
+  var duration = 1400;
+  var start = performance.now();
+
+  function tick(now) {
+    var p = Math.min((now - start) / duration, 1);
+    var current = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    el.textContent = current + suffix;
+    if (p < 1) requestAnimationFrame(tick);
   }
+  requestAnimationFrame(tick);
+}
 
   /* ---------- Contact form (Bootstrap validation) ---------- */
   var form = document.getElementById("contactForm");
